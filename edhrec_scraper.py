@@ -1,17 +1,14 @@
-import os
-import time
-import requests
-import pandas as pd
+import os, time, glob, requests, pandas as pd
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
-# ========== CONFIG ==========
+# ====== CONFIG ======
 COMMANDER_SLUG = "ojer-axonil-deepest-might"
-DECK_LIMIT = 10  # how many decks to scrape
+DECK_LIMIT = 10
 OUTPUT_DIR = "decklists_html"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# ========== FETCH LIST OF DECKS ==========
+# ====== FETCH LIST OF DECKS ======
 print(f"🔍 Fetching deck list from EDHREC optimized JSON...")
 url = f"https://json.edhrec.com/pages/decks/{COMMANDER_SLUG}/optimized.json"
 headers = {"User-Agent": "Mozilla/5.0"}
@@ -21,17 +18,13 @@ data = r.json()
 
 decks = data.get("table", [])
 print(f"Found {len(decks)} total decks.")
-
-# Convert to DataFrame and save manifest
 df = pd.json_normalize(decks)
 df["deckpreview_url"] = df["urlhash"].apply(lambda x: f"https://edhrec.com/deckpreview/{x}")
 sample_df = df.head(DECK_LIMIT)
 sample_df.to_csv(f"{COMMANDER_SLUG}_html_sample.csv", index=False)
 print(f"💾 Saved metadata for first {len(sample_df)} decks.")
 
-# ========== SCRAPE EACH DECK ==========
-print("\n🧠 Launching Playwright (Chromium)...")
-
+# ====== SCRAPE EACH DECK ======
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
     page = browser.new_page()
@@ -39,8 +32,7 @@ with sync_playwright() as p:
     for i, row in sample_df.iterrows():
         deck_id = row["urlhash"]
         deck_url = row["deckpreview_url"]
-        print(f"\n[{i+1}/{len(sample_df)}] Fetching deck {deck_id}")
-        print(f"🔗 {deck_url}")
+        print(f"\n[{i+1}/{len(sample_df)}] Fetching {deck_url}")
 
         try:
             page.goto(deck_url, timeout=90000)
@@ -51,8 +43,17 @@ with sync_playwright() as p:
             continue
 
         soup = BeautifulSoup(html, "html.parser")
-        tables = soup.find_all("table")
 
+        # --- Deck title ---
+        title_el = soup.find("h1")
+        deck_title = title_el.get_text(strip=True) if title_el else "Unknown Title"
+
+        # --- Source link (e.g., moxfield.com / archidekt.com) ---
+        src_el = soup.find("a", href=lambda x: x and ("moxfield.com" in x or "archidekt.com" in x or "tappedout.net" in x))
+        deck_source = src_el["href"] if src_el else "Unknown Source"
+
+        # --- Card tables ---
+        tables = soup.find_all("table")
         if not tables:
             print("⚠️ No tables found, skipping.")
             continue
@@ -67,7 +68,14 @@ with sync_playwright() as p:
                 if len(cols) >= 2:
                     count = cols[0].replace("×", "").strip()
                     name = cols[1]
-                    all_cards.append({"category": category, "count": count, "name": name})
+                    all_cards.append({
+                        "deck_id": deck_id,
+                        "deck_title": deck_title,
+                        "deck_source": deck_source,
+                        "category": category,
+                        "count": count,
+                        "name": name
+                    })
 
         if all_cards:
             out_path = os.path.join(OUTPUT_DIR, f"{deck_id}.csv")
@@ -78,13 +86,12 @@ with sync_playwright() as p:
 
     browser.close()
 
+# ====== MERGE ALL DECKLISTS ======
 print("\n📦 Merging all decklists into one CSV...")
-import glob
 merged = []
 
 for f in glob.glob(os.path.join(OUTPUT_DIR, "*.csv")):
     df = pd.read_csv(f)
-    df["deck_id"] = os.path.basename(f).replace(".csv", "")
     merged.append(df)
 
 if merged:
