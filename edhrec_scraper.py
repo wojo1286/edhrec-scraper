@@ -11,7 +11,7 @@ from playwright.sync_api import sync_playwright
 # CONFIGURATION
 # ==============================
 COMMANDER_SLUG = "ojer-axonil-deepest-might"
-DECK_LIMIT = 10
+DECK_LIMIT = 150
 OUTPUT_DIR = "decklists_html"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
