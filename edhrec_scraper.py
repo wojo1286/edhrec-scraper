@@ -1,12 +1,18 @@
-import os, time, glob, requests, pandas as pd
+import os
+import time
+import glob
+import requests
+import pandas as pd
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
 # ====== CONFIG ======
 COMMANDER_SLUG = "ojer-axonil-deepest-might"
-DECK_LIMIT = 10
+DECK_LIMIT = 10  # how many decks to scrape
 OUTPUT_DIR = "decklists_html"
+DEBUG_DIR = "debug_screens"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+os.makedirs(DEBUG_DIR, exist_ok=True)
 
 # ====== FETCH LIST OF DECKS ======
 print(f"🔍 Fetching deck list from EDHREC optimized JSON...")
@@ -36,13 +42,20 @@ with sync_playwright() as p:
 
         try:
             page.goto(deck_url, timeout=90000)
-            # Wait up to 20 seconds for the first table to appear
+
+            # ✅ Wait up to 25s for tables to actually render
             try:
-                page.wait_for_selector("table", timeout=20000)
-                html = page.content()
+                page.wait_for_selector("table", timeout=5000)
+                print("✅ Tables detected in DOM.")
             except Exception:
-                print("⚠️ Timed out waiting for tables to render.")
-                html = page.content()
+                print("⚠️ Timed out waiting for tables to render; capturing fallback HTML.")
+
+            # optional screenshot for debugging
+            screenshot_path = os.path.join(DEBUG_DIR, f"{deck_id}.png")
+            page.screenshot(path=screenshot_path, full_page=True)
+
+            html = page.content()
+
         except Exception as e:
             print(f"❌ Error loading {deck_url}: {e}")
             continue
@@ -53,14 +66,14 @@ with sync_playwright() as p:
         title_el = soup.find("h1")
         deck_title = title_el.get_text(strip=True) if title_el else "Unknown Title"
 
-        # --- Source link (e.g., moxfield.com / archidekt.com) ---
+        # --- Source link (Moxfield, Archidekt, etc.) ---
         src_el = soup.find("a", href=lambda x: x and ("moxfield.com" in x or "archidekt.com" in x or "tappedout.net" in x))
         deck_source = src_el["href"] if src_el else "Unknown Source"
 
-        # --- Card tables ---
+        # --- Extract all tables ---
         tables = soup.find_all("table")
         if not tables:
-            print("⚠️ No tables found, skipping.")
+            print("⚠️ No tables found in HTML, skipping.")
             continue
 
         all_cards = []
