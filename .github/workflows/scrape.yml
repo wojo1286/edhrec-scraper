@@ -30,3 +30,15 @@ jobs:
           git add *.csv
           git commit -m "Update decklists $(date -u +'%Y-%m-%d')" || echo "No changes"
           git push
+    - name: Commit CSV outputs
+            if: success()
+            run: |
+              git config user.name "github-actions"
+              git config user.email "github-actions@github.com"
+              if ls *.csv 1> /dev/null 2>&1; then
+                git add *.csv
+                git commit -m "Update decklists $(date -u +'%Y-%m-%d')" || echo "No new changes"
+                git push
+              else
+                echo "No CSV files created, skipping commit."
+              fi
