@@ -1,12 +1,8 @@
 name: EDHREC Decklist Scraper
-
 on:
+  workflow_dispatch:
   schedule:
-    - cron: "0 6 * * *"   # runs every day at 6 AM UTC
-  workflow_dispatch:       # allows manual runs from the Actions tab
-
-permissions:
-  contents: write          # needed for git push to work
+    - cron: "0 6 * * *"  # run daily at 6 AM UTC
 
 jobs:
   scrape:
@@ -22,23 +18,15 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+        run: pip install requests pandas
 
       - name: Run scraper
         run: python edhrec_scraper.py
 
       - name: Commit CSV outputs
-        if: success()
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          if ls *.csv 1> /dev/null 2>&1; then
-            echo "CSV files found — committing updates."
-            git add *.csv
-            git commit -m "Update decklists $(date -u +'%Y-%m-%d')" || echo "No new changes to commit."
-            git push
-          else
-            echo "No CSV files created — skipping commit."
-          fi
+          git add *.csv || echo "No CSVs to add"
+          git commit -m "Update optimized decks $(date -u +'%Y-%m-%d')" || echo "No changes to commit"
+          git push
