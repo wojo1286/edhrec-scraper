@@ -57,7 +57,7 @@ with sync_playwright() as p:
 
             # Wait for table(s) to load
             try:
-                page.wait_for_selector("table", timeout=25000)
+                page.wait_for_selector("table", timeout=5000)
                 print("✅ Table view loaded.")
             except Exception:
                 print("⚠️ Timed out waiting for tables to render.")
