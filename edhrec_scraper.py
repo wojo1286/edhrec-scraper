@@ -36,8 +36,13 @@ with sync_playwright() as p:
 
         try:
             page.goto(deck_url, timeout=90000)
-            time.sleep(5)  # wait for JS render
-            html = page.content()
+            # Wait up to 20 seconds for the first table to appear
+            try:
+                page.wait_for_selector("table", timeout=20000)
+                html = page.content()
+            except Exception:
+                print("⚠️ Timed out waiting for tables to render.")
+                html = page.content()
         except Exception as e:
             print(f"❌ Error loading {deck_url}: {e}")
             continue
