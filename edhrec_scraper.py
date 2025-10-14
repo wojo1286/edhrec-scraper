@@ -28,11 +28,21 @@ def get_cards(deck_url):
     return cards
 
 def main():
+    print("Fetching deck links from:", OPTIMIZED_URL)
     links = get_deck_links()
-    print(f"Found {len(links)} deck links.")
-    for link in links[:4]:  # first 4 decks only
+    print(f"Found {len(links)} deck links:", links)
+
+    if not links:
+        print("⚠️ No deck links found. The page structure may have changed or the selectors need updating.")
+        return
+
+    for link in links[:4]:
         print(f"Scraping {link}")
         cards = get_cards(link)
+        print(f"→ {len(cards)} cards found")
+        if not cards:
+            print("⚠️ No cards found for this deck. Skipping.")
+            continue
         filename = link.split("/")[-1] + ".csv"
         with open(filename, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
@@ -40,6 +50,4 @@ def main():
             writer.writerows(cards)
         time.sleep(2)
 
-if __name__ == "__main__":
-    main()
 
