@@ -5,6 +5,9 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
+# ==============================
+# CONFIGURATION
+# ==============================
 COMMANDER_SLUG = "ojer-axonil-deepest-might"
 DECK_LIMIT = 10
 OUTPUT_DIR = "decklists_html"
@@ -12,7 +15,9 @@ DEBUG_DIR = "debug_screens"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(DEBUG_DIR, exist_ok=True)
 
-# ===== FETCH DECK METADATA =====
+# ==============================
+# FETCH METADATA FROM EDHREC
+# ==============================
 print(f"🔍 Fetching deck list from EDHREC optimized JSON...")
 json_url = f"https://json.edhrec.com/pages/decks/{COMMANDER_SLUG}/optimized.json"
 headers = {"User-Agent": "Mozilla/5.0"}
@@ -28,7 +33,9 @@ sample_df = df.head(DECK_LIMIT)
 sample_df.to_csv(f"{COMMANDER_SLUG}_html_sample.csv", index=False)
 print(f"💾 Saved metadata for first {len(sample_df)} decks.")
 
-
+# ==============================
+# PARSE DECK TABLE
+# ==============================
 def parse_table(html, deck_id, deck_source):
     soup = BeautifulSoup(html, "html.parser")
     cards = []
@@ -36,30 +43,25 @@ def parse_table(html, deck_id, deck_source):
     for table in soup.find_all("table"):
         for tr in table.find_all("tr")[1:]:
             tds = tr.find_all("td")
-            if not tds:
+            if len(tds) < 6:
                 continue
 
-            # === COUNT ===
-            count_el = tr.find("span", class_="float-right")
-            count = count_el.get_text(strip=True) if count_el else None
+            # --- CMC (was "count") ---
+            cmc_el = tr.find("span", class_="float-right")
+            cmc = cmc_el.get_text(strip=True) if cmc_el else None
 
-            # === NAME ===
+            # --- Card Name ---
             name_el = tr.find("a")
             name = name_el.get_text(strip=True) if name_el else None
+            card_url = name_el["href"] if name_el and name_el.has_attr("href") else None
 
-            # === TYPE ===
-            type_el = None
-            for td in tds:
-                txt = td.get_text(strip=True)
-                if txt in [
-                    "Creature", "Instant", "Sorcery", "Artifact", "Land",
-                    "Enchantment", "Planeswalker", "Battle"
-                ]:
-                    type_el = txt
-                    break
-            ctype = type_el if type_el else None
+            # --- Card Type (6th <td> column) ---
+            try:
+                ctype = tds[5].get_text(strip=True)
+            except IndexError:
+                ctype = None
 
-            # === PRICE ===
+            # --- Card Price (last <td> containing a $) ---
             price_el = None
             for td in reversed(tds):
                 txt = td.get_text(strip=True)
@@ -72,15 +74,17 @@ def parse_table(html, deck_id, deck_source):
                 cards.append({
                     "deck_id": deck_id,
                     "deck_source": deck_source,
-                    "count": count,
+                    "cmc": cmc,
                     "name": name,
                     "type": ctype,
-                    "price": price
+                    "price": price,
+                    "card_url": card_url
                 })
-
     return cards
 
-
+# ==============================
+# SCRAPE EACH DECKPREVIEW PAGE
+# ==============================
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
     page = browser.new_page()
@@ -123,10 +127,10 @@ with sync_playwright() as p:
             src_el = soup.find("a", href=lambda x: x and any(domain in x for domain in ["moxfield.com", "archidekt.com", "tappedout.net"]))
             deck_source = src_el["href"] if src_el else "Unknown Source"
 
-            # --- Parse cards ---
+            # --- Parse deck cards ---
             cards = parse_table(html, deck_id, deck_source)
 
-            # --- Screenshot for debugging ---
+            # --- Save debug screenshot ---
             page.screenshot(path=os.path.join(DEBUG_DIR, f"{deck_id}.png"), full_page=True)
 
             if cards:
@@ -142,7 +146,9 @@ with sync_playwright() as p:
 
     browser.close()
 
-# ===== MERGE =====
+# ==============================
+# MERGE INTO SINGLE CSV
+# ==============================
 print("\n📦 Merging all decklists into one CSV...")
 merged = [pd.read_csv(f) for f in glob.glob(os.path.join(OUTPUT_DIR, "*.csv")) if os.path.getsize(f) > 0]
 if merged:
