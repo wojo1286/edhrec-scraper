@@ -13,9 +13,7 @@ from playwright.sync_api import sync_playwright
 COMMANDER_SLUG = "ojer-axonil-deepest-might"
 DECK_LIMIT = 10
 OUTPUT_DIR = "decklists_html"
-DEBUG_DIR = "debug_screens"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(DEBUG_DIR, exist_ok=True)
 
 # ==============================
 # FETCH METADATA FROM EDHREC
@@ -48,7 +46,7 @@ def parse_table(html, deck_id, deck_source):
             if len(tds) < 6:
                 continue
 
-            # --- CMC (formerly "count") ---
+            # --- CMC ---
             cmc_el = tr.find("span", class_="float-right")
             cmc = cmc_el.get_text(strip=True) if cmc_el else None
 
@@ -64,7 +62,7 @@ def parse_table(html, deck_id, deck_source):
                     ctype = text
                     break
 
-            # --- Price (last cell starting with $) ---
+            # --- Card Price ---
             price = None
             for td in reversed(tds):
                 txt = td.get_text(strip=True)
@@ -130,9 +128,6 @@ with sync_playwright() as p:
 
             # --- Parse deck cards ---
             cards = parse_table(html, deck_id, deck_source)
-
-            # --- Save screenshot for debugging ---
-            page.screenshot(path=os.path.join(DEBUG_DIR, f"{deck_id}.png"), full_page=True)
 
             if cards:
                 out_path = os.path.join(OUTPUT_DIR, f"{deck_id}.csv")
