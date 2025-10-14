@@ -44,7 +44,7 @@ with sync_playwright() as p:
 
             # --- Switch to table view ---
             try:
-                page.wait_for_selector('button.nav-link[aria-controls*="table"]', timeout=15000)
+                page.wait_for_selector('button.nav-link[aria-controls*="table"]', timeout=5000)
                 print("🖱️ Switching to table view...")
                 page.click('button.nav-link[aria-controls*="table"]')
                 page.wait_for_selector("table", timeout=20000)
@@ -55,8 +55,8 @@ with sync_playwright() as p:
             # --- Enable Card Type Column ---
             try:
                 print("🎛️ Enabling 'Type' column...")
-                page.click("button#dropdown-item-button.dropdown-toggle", timeout=10000)
-                page.wait_for_selector("button.dropdown-item", timeout=5000)
+                page.click("button#dropdown-item-button.dropdown-toggle", timeout=2000)
+                page.wait_for_selector("button.dropdown-item", timeout=2000)
                 buttons = page.query_selector_all("button.dropdown-item")
                 for btn in buttons:
                     label = btn.inner_text().strip()
@@ -138,4 +138,26 @@ with sync_playwright() as p:
                     "price": price
                 })
 
-        if
+        if all_cards:
+            out_path = os.path.join(OUTPUT_DIR, f"{deck_id}.csv")
+            pd.DataFrame(all_cards).to_csv(out_path, index=False)
+            print(f"✅ Saved {len(all_cards)} cards to {out_path}")
+        else:
+            print("⚠️ Deck contained no cards after parsing.")
+
+    browser.close()
+
+# ===== MERGE ALL =====
+print("\n📦 Merging all decklists into one CSV...")
+merged = []
+for f in glob.glob(os.path.join(OUTPUT_DIR, "*.csv")):
+    df = pd.read_csv(f)
+    merged.append(df)
+
+if merged:
+    all_decks = pd.concat(merged, ignore_index=True)
+    out_path = f"{COMMANDER_SLUG}_combined_decklists.csv"
+    all_decks.to_csv(out_path, index=False)
+    print(f"✅ Combined decklists saved as {out_path}")
+else:
+    print("⚠️ No decks were successfully parsed.")
