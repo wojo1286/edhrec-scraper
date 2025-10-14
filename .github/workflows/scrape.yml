@@ -1,0 +1,32 @@
+name: EDHREC Decklist Scraper
+
+on:
+  schedule:
+    - cron: "0 6 * * *"  # runs every day at 6am UTC
+  workflow_dispatch:     # allows manual trigger
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scraper
+        run: python edhrec_scraper.py
+
+      - name: Commit results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add *.csv
+          git commit -m "Update decklists $(date -u +'%Y-%m-%d')" || echo "No changes"
+          git push
