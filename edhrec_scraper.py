@@ -12,6 +12,7 @@ DEBUG_DIR = "debug_screens"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(DEBUG_DIR, exist_ok=True)
 
+# ===== FETCH DECK METADATA =====
 print(f"🔍 Fetching deck list from EDHREC optimized JSON...")
 json_url = f"https://json.edhrec.com/pages/decks/{COMMANDER_SLUG}/optimized.json"
 headers = {"User-Agent": "Mozilla/5.0"}
@@ -29,52 +30,43 @@ print(f"💾 Saved metadata for first {len(sample_df)} decks.")
 
 
 def parse_table(html, deck_id, deck_source):
-    """Extract count, name, type, and price from each table."""
     soup = BeautifulSoup(html, "html.parser")
-    tables = soup.find_all("table")
     cards = []
 
-    for table in tables:
-        rows = table.find_all("tr")[1:]
-        for tr in rows:
+    for table in soup.find_all("table"):
+        for tr in table.find_all("tr")[1:]:
             tds = tr.find_all("td")
-            if not tds or len(tds) < 3:
+            if not tds:
                 continue
 
-            # --- safer extraction ---
-            text_cells = [td.get_text(" ", strip=True) for td in tds]
+            # === COUNT ===
+            count_el = tr.find("span", class_="float-right")
+            count = count_el.get_text(strip=True) if count_el else None
 
-            # try to detect likely columns dynamically
-            name = None
-            ctype = None
-            count = None
-            price = None
+            # === NAME ===
+            name_el = tr.find("a")
+            name = name_el.get_text(strip=True) if name_el else None
 
-            # Find hyperlink text for card name if exists
-            name_link = tr.find("a")
-            if name_link:
-                name = name_link.get_text(strip=True)
-
-            # Try to detect count (first numeric-like small cell)
-            for td in tds:
-                if "×" in td.get_text():
-                    count = td.get_text().replace("×", "").strip()
-                    break
-
-            # Try to get Type column if present
+            # === TYPE ===
+            type_el = None
             for td in tds:
                 txt = td.get_text(strip=True)
-                # Common card type indicators
-                if any(x in txt for x in ["Creature", "Instant", "Sorcery", "Artifact", "Land", "Enchantment", "Planeswalker"]):
-                    ctype = txt
+                if txt in [
+                    "Creature", "Instant", "Sorcery", "Artifact", "Land",
+                    "Enchantment", "Planeswalker", "Battle"
+                ]:
+                    type_el = txt
                     break
+            ctype = type_el if type_el else None
 
-            # Price = last cell starting with $
+            # === PRICE ===
+            price_el = None
             for td in reversed(tds):
                 txt = td.get_text(strip=True)
                 if txt.startswith("$"):
-                    price = txt
+                    price_el = txt
                     break
+            price = price_el if price_el else None
 
             if name:
                 cards.append({
@@ -85,6 +77,7 @@ def parse_table(html, deck_id, deck_source):
                     "type": ctype,
                     "price": price
                 })
+
     return cards
 
 
@@ -100,7 +93,7 @@ with sync_playwright() as p:
         try:
             page.goto(deck_url, timeout=90000)
 
-            # Switch to table view
+            # --- Switch to table view ---
             try:
                 page.wait_for_selector('button.nav-link[aria-controls*="table"]', timeout=15000)
                 print("🖱️ Switching to table view...")
@@ -110,15 +103,13 @@ with sync_playwright() as p:
             except Exception:
                 print("⚠️ Could not switch to table view.")
 
-            # Enable "Type" column
+            # --- Enable 'Type' column ---
             try:
                 print("🎛️ Enabling 'Type' column...")
                 page.click("button#dropdown-item-button.dropdown-toggle", timeout=10000)
                 page.wait_for_selector("button.dropdown-item", timeout=5000)
-                buttons = page.query_selector_all("button.dropdown-item")
-                for btn in buttons:
-                    label = btn.inner_text().strip()
-                    if "Type" in label:
+                for btn in page.query_selector_all("button.dropdown-item"):
+                    if "Type" in btn.inner_text():
                         btn.click()
                         print("✅ 'Type' column toggled on.")
                         break
@@ -126,38 +117,32 @@ with sync_playwright() as p:
             except Exception:
                 print("⚠️ Could not enable Type column.")
 
+            # --- Get deck source ---
             html = page.content()
+            soup = BeautifulSoup(html, "html.parser")
+            src_el = soup.find("a", href=lambda x: x and any(domain in x for domain in ["moxfield.com", "archidekt.com", "tappedout.net"]))
+            deck_source = src_el["href"] if src_el else "Unknown Source"
 
-            # retry once if no tables
-            if "<table" not in html:
-                print("🔁 Retrying after short wait...")
-                page.wait_for_timeout(2000)
-                html = page.content()
+            # --- Parse cards ---
+            cards = parse_table(html, deck_id, deck_source)
 
-            # Screenshot for debugging
+            # --- Screenshot for debugging ---
             page.screenshot(path=os.path.join(DEBUG_DIR, f"{deck_id}.png"), full_page=True)
+
+            if cards:
+                out_path = os.path.join(OUTPUT_DIR, f"{deck_id}.csv")
+                pd.DataFrame(cards).to_csv(out_path, index=False)
+                print(f"✅ Saved {len(cards)} cards to {out_path}")
+            else:
+                print("⚠️ No cards parsed.")
 
         except Exception as e:
             print(f"❌ Error loading {deck_url}: {e}")
             continue
 
-        # parse deck source
-        soup = BeautifulSoup(html, "html.parser")
-        src_el = soup.find("a", href=lambda x: x and any(domain in x for domain in ["moxfield.com", "archidekt.com", "tappedout.net"]))
-        deck_source = src_el["href"] if src_el else "Unknown Source"
-
-        cards = parse_table(html, deck_id, deck_source)
-
-        if cards:
-            out_path = os.path.join(OUTPUT_DIR, f"{deck_id}.csv")
-            pd.DataFrame(cards).to_csv(out_path, index=False)
-            print(f"✅ Saved {len(cards)} cards to {out_path}")
-        else:
-            print("⚠️ No cards parsed.")
-
     browser.close()
 
-# Merge all decklists
+# ===== MERGE =====
 print("\n📦 Merging all decklists into one CSV...")
 merged = [pd.read_csv(f) for f in glob.glob(os.path.join(OUTPUT_DIR, "*.csv")) if os.path.getsize(f) > 0]
 if merged:
