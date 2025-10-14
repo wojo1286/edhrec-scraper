@@ -23,7 +23,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests pandas
+        run: pip install requests pandas beautifulsoup4 lxml
 
       - name: Run scraper
         run: python edhrec_scraper.py
