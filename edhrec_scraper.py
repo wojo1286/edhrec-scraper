@@ -1,36 +1,39 @@
 import os
-import time
 import glob
+import time
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
-# ====== CONFIG ======
+# ===== CONFIG =====
 COMMANDER_SLUG = "ojer-axonil-deepest-might"
-DECK_LIMIT = 10  # how many decks to scrape
+DECK_LIMIT = 10  # limit to first 10 decks for testing
 OUTPUT_DIR = "decklists_html"
 DEBUG_DIR = "debug_screens"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(DEBUG_DIR, exist_ok=True)
 
-# ====== FETCH LIST OF DECKS ======
+# ===== FETCH DECK METADATA =====
 print(f"🔍 Fetching deck list from EDHREC optimized JSON...")
-url = f"https://json.edhrec.com/pages/decks/{COMMANDER_SLUG}/optimized.json"
+json_url = f"https://json.edhrec.com/pages/decks/{COMMANDER_SLUG}/optimized.json"
 headers = {"User-Agent": "Mozilla/5.0"}
-r = requests.get(url, headers=headers)
+
+r = requests.get(json_url, headers=headers)
 r.raise_for_status()
 data = r.json()
 
 decks = data.get("table", [])
 print(f"Found {len(decks)} total decks.")
+
 df = pd.json_normalize(decks)
 df["deckpreview_url"] = df["urlhash"].apply(lambda x: f"https://edhrec.com/deckpreview/{x}")
+
 sample_df = df.head(DECK_LIMIT)
 sample_df.to_csv(f"{COMMANDER_SLUG}_html_sample.csv", index=False)
 print(f"💾 Saved metadata for first {len(sample_df)} decks.")
 
-# ====== SCRAPE EACH DECK ======
+# ===== SCRAPE EACH DECK =====
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
     page = browser.new_page()
@@ -41,16 +44,25 @@ with sync_playwright() as p:
         print(f"\n[{i+1}/{len(sample_df)}] Fetching {deck_url}")
 
         try:
+            # --- Open deck page ---
             page.goto(deck_url, timeout=90000)
 
-            # ✅ Wait up to 25s for tables to actually render
+            # Wait for table/grid layout toggle button
             try:
-                page.wait_for_selector("table", timeout=5000)
-                print("✅ Tables detected in DOM.")
+                page.wait_for_selector('button.nav-link[aria-controls*="table"]', timeout=15000)
+                print("🖱️ Switching to table view...")
+                page.click('button.nav-link[aria-controls*="table"]')
             except Exception:
-                print("⚠️ Timed out waiting for tables to render; capturing fallback HTML.")
+                print("⚠️ Could not find table view toggle button; continuing anyway.")
 
-            # optional screenshot for debugging
+            # Wait for table(s) to load
+            try:
+                page.wait_for_selector("table", timeout=25000)
+                print("✅ Table view loaded.")
+            except Exception:
+                print("⚠️ Timed out waiting for tables to render.")
+
+            # Optional: take a screenshot for debugging
             screenshot_path = os.path.join(DEBUG_DIR, f"{deck_id}.png")
             page.screenshot(path=screenshot_path, full_page=True)
 
@@ -60,20 +72,20 @@ with sync_playwright() as p:
             print(f"❌ Error loading {deck_url}: {e}")
             continue
 
+        # --- Parse HTML ---
         soup = BeautifulSoup(html, "html.parser")
 
-        # --- Deck title ---
+        # Title and Source
         title_el = soup.find("h1")
         deck_title = title_el.get_text(strip=True) if title_el else "Unknown Title"
 
-        # --- Source link (Moxfield, Archidekt, etc.) ---
         src_el = soup.find("a", href=lambda x: x and ("moxfield.com" in x or "archidekt.com" in x or "tappedout.net" in x))
         deck_source = src_el["href"] if src_el else "Unknown Source"
 
-        # --- Extract all tables ---
+        # Extract tables
         tables = soup.find_all("table")
         if not tables:
-            print("⚠️ No tables found in HTML, skipping.")
+            print("⚠️ No tables found, skipping.")
             continue
 
         all_cards = []
@@ -86,13 +98,15 @@ with sync_playwright() as p:
                 if len(cols) >= 2:
                     count = cols[0].replace("×", "").strip()
                     name = cols[1]
+                    price = cols[-1] if cols[-1].startswith("$") else None
                     all_cards.append({
                         "deck_id": deck_id,
                         "deck_title": deck_title,
                         "deck_source": deck_source,
                         "category": category,
                         "count": count,
-                        "name": name
+                        "name": name,
+                        "price": price
                     })
 
         if all_cards:
@@ -104,7 +118,7 @@ with sync_playwright() as p:
 
     browser.close()
 
-# ====== MERGE ALL DECKLISTS ======
+# ===== MERGE ALL DECKLISTS =====
 print("\n📦 Merging all decklists into one CSV...")
 merged = []
 
