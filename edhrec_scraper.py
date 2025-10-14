@@ -1,53 +1,56 @@
-import requests
-from bs4 import BeautifulSoup
-import pandas as pd
 import os
 import time
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright
 
-# ------------------ CONFIG ------------------
+# ========== CONFIG ==========
 COMMANDER_SLUG = "ojer-axonil-deepest-might"
+DECK_LIMIT = 10  # how many decks to scrape
 OUTPUT_DIR = "decklists_html"
-BASE_URL = "https://json.edhrec.com/pages/decks"
-DECKPREVIEW_URL = "https://edhrec.com/deckpreview/"
-HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
-MAX_DECKS = 10  # limit for testing
-# --------------------------------------------
-
-# Ensure output directory exists
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Fetch list of optimized decks
-optimized_url = f"{BASE_URL}/{COMMANDER_SLUG}/optimized.json"
-print(f"Fetching deck list from: {optimized_url}")
-r = requests.get(optimized_url, headers=HEADERS)
+# ========== FETCH LIST OF DECKS ==========
+print(f"🔍 Fetching deck list from EDHREC optimized JSON...")
+url = f"https://json.edhrec.com/pages/decks/{COMMANDER_SLUG}/optimized.json"
+headers = {"User-Agent": "Mozilla/5.0"}
+r = requests.get(url, headers=headers)
 r.raise_for_status()
 data = r.json()
 
 decks = data.get("table", [])
-print(f"Found {len(decks)} total decks")
+print(f"Found {len(decks)} total decks.")
 
+# Convert to DataFrame and save manifest
 df = pd.json_normalize(decks)
-df["deckpreview_url"] = DECKPREVIEW_URL + df["urlhash"]
-
-# Use only first few for testing
-sample_df = df.head(MAX_DECKS)
+df["deckpreview_url"] = df["urlhash"].apply(lambda x: f"https://edhrec.com/deckpreview/{x}")
+sample_df = df.head(DECK_LIMIT)
 sample_df.to_csv(f"{COMMANDER_SLUG}_html_sample.csv", index=False)
-print(f"Saved metadata for first {MAX_DECKS} decks.")
+print(f"💾 Saved metadata for first {len(sample_df)} decks.")
 
-# Loop through each deck preview
-for i, row in sample_df.iterrows():
-    deck_id = row["urlhash"]
-    deck_url = row["deckpreview_url"]
-    print(f"\n[{i+1}/{len(sample_df)}] Fetching deck {deck_id}")
-    print(f" → {deck_url}")
+# ========== SCRAPE EACH DECK ==========
+print("\n🧠 Launching Playwright (Chromium)...")
 
-    try:
-        res = requests.get(deck_url, headers=HEADERS, timeout=15)
-        if res.status_code != 200:
-            print(f"⚠️ Skipped (status {res.status_code})")
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    page = browser.new_page()
+
+    for i, row in sample_df.iterrows():
+        deck_id = row["urlhash"]
+        deck_url = row["deckpreview_url"]
+        print(f"\n[{i+1}/{len(sample_df)}] Fetching deck {deck_id}")
+        print(f"🔗 {deck_url}")
+
+        try:
+            page.goto(deck_url, timeout=90000)
+            time.sleep(5)  # wait for JS render
+            html = page.content()
+        except Exception as e:
+            print(f"❌ Error loading {deck_url}: {e}")
             continue
 
-        soup = BeautifulSoup(res.text, "html.parser")
+        soup = BeautifulSoup(html, "html.parser")
         tables = soup.find_all("table")
 
         if not tables:
@@ -55,34 +58,39 @@ for i, row in sample_df.iterrows():
             continue
 
         all_cards = []
-
         for t in tables:
-            # Find category name from nearest heading
-            category_tag = t.find_previous(["h2", "h3"])
-            category = category_tag.get_text(strip=True) if category_tag else "Unknown"
-            rows = t.find_all("tr")[1:]  # skip header row
-
-            for row_tag in rows:
-                cols = [c.get_text(strip=True) for c in row_tag.find_all("td")]
+            heading = t.find_previous(["h2", "h3"])
+            category = heading.get_text(strip=True) if heading else "Unknown"
+            rows = t.find_all("tr")[1:]
+            for tr in rows:
+                cols = [c.get_text(strip=True) for c in tr.find_all("td")]
                 if len(cols) >= 2:
-                    try:
-                        count = int(cols[0])
-                    except ValueError:
-                        count = 1
+                    count = cols[0].replace("×", "").strip()
                     name = cols[1]
                     all_cards.append({"category": category, "count": count, "name": name})
 
-        if not all_cards:
-            print("⚠️ No cards parsed.")
-            continue
+        if all_cards:
+            out_path = os.path.join(OUTPUT_DIR, f"{deck_id}.csv")
+            pd.DataFrame(all_cards).to_csv(out_path, index=False)
+            print(f"✅ Saved {len(all_cards)} cards to {out_path}")
+        else:
+            print("⚠️ Deck contained no cards after parsing.")
 
-        deck_df = pd.DataFrame(all_cards)
-        out_path = os.path.join(OUTPUT_DIR, f"{deck_id}.csv")
-        deck_df.to_csv(out_path, index=False)
-        print(f"✅ Saved {len(deck_df)} cards to {out_path}")
+    browser.close()
 
-        time.sleep(1)
-    except Exception as e:
-        print(f"❌ Error processing deck {deck_id}: {e}")
+print("\n📦 Merging all decklists into one CSV...")
+import glob
+merged = []
 
-print("\n🎉 Done! Decklists saved in decklists_html/")
+for f in glob.glob(os.path.join(OUTPUT_DIR, "*.csv")):
+    df = pd.read_csv(f)
+    df["deck_id"] = os.path.basename(f).replace(".csv", "")
+    merged.append(df)
+
+if merged:
+    all_decks = pd.concat(merged, ignore_index=True)
+    out_path = f"{COMMANDER_SLUG}_combined_decklists.csv"
+    all_decks.to_csv(out_path, index=False)
+    print(f"✅ Combined decklists saved as {out_path}")
+else:
+    print("⚠️ No decks were successfully parsed.")
