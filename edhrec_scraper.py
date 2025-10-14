@@ -1,5 +1,7 @@
 import os
 import glob
+import time
+import random
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -46,29 +48,29 @@ def parse_table(html, deck_id, deck_source):
             if len(tds) < 6:
                 continue
 
-            # --- CMC (was "count") ---
+            # --- CMC (formerly "count") ---
             cmc_el = tr.find("span", class_="float-right")
             cmc = cmc_el.get_text(strip=True) if cmc_el else None
 
             # --- Card Name ---
             name_el = tr.find("a")
             name = name_el.get_text(strip=True) if name_el else None
-            card_url = name_el["href"] if name_el and name_el.has_attr("href") else None
 
-            # --- Card Type (6th <td> column) ---
-            try:
-                ctype = tds[5].get_text(strip=True)
-            except IndexError:
-                ctype = None
+            # --- Card Type ---
+            ctype = None
+            for td in tds:
+                text = td.get_text(strip=True)
+                if text in ["Creature", "Instant", "Sorcery", "Artifact", "Enchantment", "Planeswalker", "Land"]:
+                    ctype = text
+                    break
 
-            # --- Card Price (last <td> containing a $) ---
-            price_el = None
+            # --- Price (last cell starting with $) ---
+            price = None
             for td in reversed(tds):
                 txt = td.get_text(strip=True)
                 if txt.startswith("$"):
-                    price_el = txt
+                    price = txt
                     break
-            price = price_el if price_el else None
 
             if name:
                 cards.append({
@@ -77,8 +79,7 @@ def parse_table(html, deck_id, deck_source):
                     "cmc": cmc,
                     "name": name,
                     "type": ctype,
-                    "price": price,
-                    "card_url": card_url
+                    "price": price
                 })
     return cards
 
@@ -107,9 +108,9 @@ with sync_playwright() as p:
             except Exception:
                 print("⚠️ Could not switch to table view.")
 
-            # --- Enable 'Type' column ---
+            # --- Ensure Type column is visible ---
             try:
-                print("🎛️ Enabling 'Type' column...")
+                print("🎛️ Ensuring 'Type' column is visible...")
                 page.click("button#dropdown-item-button.dropdown-toggle", timeout=10000)
                 page.wait_for_selector("button.dropdown-item", timeout=5000)
                 for btn in page.query_selector_all("button.dropdown-item"):
@@ -117,9 +118,9 @@ with sync_playwright() as p:
                         btn.click()
                         print("✅ 'Type' column toggled on.")
                         break
-                page.wait_for_timeout(1000)
-            except Exception:
-                print("⚠️ Could not enable Type column.")
+                page.wait_for_selector("th:has-text('Type')", timeout=5000)
+            except Exception as e:
+                print(f"⚠️ Could not confirm Type column: {e}")
 
             # --- Get deck source ---
             html = page.content()
@@ -130,7 +131,7 @@ with sync_playwright() as p:
             # --- Parse deck cards ---
             cards = parse_table(html, deck_id, deck_source)
 
-            # --- Save debug screenshot ---
+            # --- Save screenshot for debugging ---
             page.screenshot(path=os.path.join(DEBUG_DIR, f"{deck_id}.png"), full_page=True)
 
             if cards:
@@ -140,6 +141,9 @@ with sync_playwright() as p:
             else:
                 print("⚠️ No cards parsed.")
 
+            # --- Add small delay ---
+            time.sleep(random.uniform(2.5, 4.5))
+
         except Exception as e:
             print(f"❌ Error loading {deck_url}: {e}")
             continue
@@ -147,7 +151,7 @@ with sync_playwright() as p:
     browser.close()
 
 # ==============================
-# MERGE INTO SINGLE CSV
+# MERGE ALL DECKS INTO ONE FILE
 # ==============================
 print("\n📦 Merging all decklists into one CSV...")
 merged = [pd.read_csv(f) for f in glob.glob(os.path.join(OUTPUT_DIR, "*.csv")) if os.path.getsize(f) > 0]
