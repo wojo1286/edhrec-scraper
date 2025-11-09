@@ -4,9 +4,9 @@ deck_id,deck_source,cmc,name,type,price
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Electrostatic Field,Creature,$1.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Erebor Flamesmith,Creature,$0.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Firebrand Archer,Creature,$0.35
-1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Firespitter Whelp,Creature,$0.39
-1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Goblin Chainwhirler,Creature,$0.99
-1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Guttersnipe,Creature,$0.49
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Firespitter Whelp,Creature,$0.49
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Goblin Chainwhirler,Creature,$0.79
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Guttersnipe,Creature,$0.59
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Immolation Shaman,Creature,$0.69
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Kessig Flamebreather,Creature,$3.49
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Rampaging Ferocidon,Creature,$0.69
@@ -17,34 +17,41 @@ deck_id,deck_source,cmc,name,type,price
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Delayed Blast Fireball,Instant,$13.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Demand Answers,Instant,$0.69
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,Electrickery,Instant,$0.49
-1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Flare of Duplication,Instant,$2.99
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Flare of Duplication,Instant,$2.79
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,Lightning Bolt,Instant,$1.79
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,Monstrous Rage,Instant,$1.49
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,Play with Fire,Instant,$0.39
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Pyretic Ritual,Instant,$8.49
-1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Reverberate,Instant,$3.49
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Reverberate,Instant,$2.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Seething Song,Instant,$9.49
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,Spikefield Hazard,Instant,$0.79
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Thrill of Possibility,Instant,$0.35
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,Thunder Magic,Instant,$0.35
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Unleash Fury,Instant,$0.79
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Valakut Awakening,Instant,$15.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Volcanic Fallout,Instant,$0.35
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,9,Blasphemous Act,Sorcery,$3.49
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Collective Defiance,Sorcery,$0.49
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,Earthquake,Sorcery,$0.99
-1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,End the Festivities,Sorcery,$0.99
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,End the Festivities,Sorcery,$1.29
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,Faithless Looting,Sorcery,$0.69
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,Gamble,Sorcery,$13.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Grab the Prize,Sorcery,$0.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Grapeshot,Sorcery,$0.35
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Haze of Rage,Sorcery,$1.79
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Into the Fire,Sorcery,$0.49
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Jeska's Will,Sorcery,$32.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,4,Past in Flames,Sorcery,$1.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Rain of Embers,Sorcery,$0.35
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Reckless Impulse,Sorcery,$0.99
-1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Seize the Spoils,Sorcery,$1.29
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Sundering Eruption,Sorcery,$1.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,Tectonic Hazard,Sorcery,$0.35
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,Vandalblast,Sorcery,$2.99
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,0,Wheel of Fate,Sorcery,$2.99
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Wheel of Fortune,Sorcery,$379.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Witch's Mark,Sorcery,$0.35
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Wrenn's Resolve,Sorcery,$2.79
-1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Ankh of Mishra,Artifact,$8.49
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Ankh of Mishra,Artifact,$7.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Arcane Signet,Artifact,$0.79
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Darksteel Plate,Artifact,$5.49
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Glamdring,Artifact,$2.29
@@ -54,18 +61,21 @@ deck_id,deck_source,cmc,name,type,price
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Runechanter's Pike,Artifact,$0.49
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,1,Sol Ring,Artifact,$1.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Swiftfoot Boots,Artifact,$2.49
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,6,Arcane Bombardment,Enchantment,$3.49
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Blood Moon,Enchantment,$8.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,4,Burning Earth,Enchantment,$4.49
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,5,Double Vision,Enchantment,$0.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Fiery Inscription,Enchantment,$0.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,4,Manabarbs,Enchantment,$4.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,4,Pyrohemia,Enchantment,$14.99
-1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Roiling Vortex,Enchantment,$1.79
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Roiling Vortex,Enchantment,$1.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,3,Sulfuric Vortex,Enchantment,$1.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,2,Underworld Breach,Enchantment,$13.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,0,Bonders' Enclave,Land,$0.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,0,Demolition Field,Land,$0.49
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,0,Ghost Quarter,Land,$0.79
-1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,0,Mines of Moria,Land,$1.79
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,0,Mines of Moria,Land,$1.99
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,0,Mountain,Land,$0.35
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,0,Myriad Landscape,Land,$0.35
 1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,0,Tyrite Sanctum,Land,$3.49
+1NkeaKew4nrZfPu1bGMzuQ,https://archidekt.com/decks/13316134?utm_source=edhrec&utm_medium=deck_summary,0,War Room,Land,$4.99
