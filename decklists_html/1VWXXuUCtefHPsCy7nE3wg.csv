@@ -9,9 +9,9 @@ deck_id,deck_source,cmc,name,type,price
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,2,Kessig Flamebreather,Creature,$2.99
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,5,"Neheb, the Eternal",Creature,$3.49
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,5,Pinnacle Monk,Creature,$2.99
-1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,3,Rampaging Ferocidon,Creature,$0.79
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,2,Razorkin Needlehead,Creature,$10.99
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,2,Runaway Steam-Kin,Creature,$1.79
+1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,3,Screaming Nemesis,Creature,$11.99
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,4,Storm-Kiln Artist,Creature,$1.99
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,2,Thermo-Alchemist,Creature,$0.35
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,4,Bolt Bend,Instant,$4.49
@@ -41,6 +41,7 @@ deck_id,deck_source,cmc,name,type,price
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,3,Light Up the Stage,Sorcery,$0.35
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,5,Mana Geyser,Sorcery,$3.49
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,4,Mizzix's Mastery,Sorcery,$3.49
+1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,4,Past in Flames,Sorcery,$1.79
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,2,Reckless Impulse,Sorcery,$0.79
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,5,Reforge the Soul,Sorcery,$5.49
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,1,Rite of Flame,Sorcery,$6.99
@@ -64,7 +65,6 @@ deck_id,deck_source,cmc,name,type,price
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,1,Sol Ring,Artifact,$1.99
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,4,Manabarbs,Enchantment,$4.49
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,4,Pyrohemia,Enchantment,$12.99
-1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,2,Underworld Breach,Enchantment,$13.99
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,5,Virtue of Courage,Enchantment,$2.49
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,4,"Chandra, Torch of Defiance",Planeswalker,$4.49
 1VWXXuUCtefHPsCy7nE3wg,https://moxfield.com/decks/EilYpAeOlk-KKJSOq95zOg?utm_source=edhrec&utm_medium=deck_summary,0,Ancient Tomb,Land,$99.99
